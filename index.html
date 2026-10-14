@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Advanced 3D Mechanical Design and Assembly Modeling</title>
+<style>
+:root{--cream:#f1e8d2;--paper:#f9f4e6;--ink:#26303c;--blue:#1d5fb4;--red:#c8372d;--green:#2f8f4e;--line:#c9bd9f;--mute:#667282}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font:16px/1.6 "Segoe UI",Roboto,Arial,sans-serif;padding-bottom:56px;
+background-color:var(--cream);
+background-image:linear-gradient(rgba(50,75,110,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(50,75,110,.12) 1px,transparent 1px),linear-gradient(rgba(50,75,110,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(50,75,110,.05) 1px,transparent 1px);
+background-size:120px 120px,120px 120px,24px 24px,24px 24px}
+.wm{position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.09;
+background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='220'><text x='20' y='140' transform='rotate(-25 180 110)' font-family='Arial' font-weight='700' font-size='24' fill='%23123'>RAYMOND D. ENTAL</text></svg>")}
+header{position:sticky;top:0;z-index:20;background:rgba(249,244,230,.94);backdrop-filter:blur(6px);border-bottom:2px solid var(--blue);display:flex;gap:6px;align-items:center;padding:8px 18px;flex-wrap:wrap}
+header b{margin-right:auto;font-size:15px}
+header a,header button{color:var(--ink);text-decoration:none;font:inherit;font-size:14px;padding:5px 12px;border:1px solid var(--line);background:var(--paper);border-radius:3px;cursor:pointer}
+header a:hover,header button:hover{border-color:var(--blue);color:var(--blue)}
+main{max-width:1120px;margin:0 auto;padding:0 18px}
+.hero{display:grid;grid-template-columns:1fr 1.1fr;gap:20px;align-items:center;padding:34px 0 20px}
+h1{font:700 clamp(28px,4.2vw,46px)/1.1 Georgia,"Times New Roman",serif;margin:0 0 14px;letter-spacing:-.5px}
+.hero p{color:var(--mute);max-width:46ch;margin:0 0 14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{color:#fff;font-weight:600;font-size:13px;padding:4px 10px;border-radius:2px}
+#stage{height:420px;border:1px solid var(--line);background:radial-gradient(circle at 50% 40%,#fbf7ea,#eadfc3);position:relative;cursor:grab;box-shadow:0 18px 40px -22px rgba(30,50,80,.55);touch-action:none}
+#stage .cap{position:absolute;left:10px;bottom:8px;font:12px Consolas,monospace;color:var(--mute)}
+#stage svg{position:absolute;left:10px;top:10px}
+h2{font:700 28px Georgia,serif;margin:44px 0 6px}
+.sub{color:var(--mute);margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;perspective:1000px}
+.card{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--blue);padding:14px 16px;transition:transform .15s,box-shadow .15s;box-shadow:0 8px 18px -12px rgba(30,50,80,.5)}
+.card h3{margin:0 0 2px;font-size:17px}
+.card code{font:12.5px Consolas,monospace;color:var(--red)}
+.card ul{margin:8px 0 0;padding-left:18px;font-size:14.5px}
+.panel{background:var(--paper);border:1px solid var(--line);padding:20px;box-shadow:0 14px 30px -20px rgba(30,50,80,.5)}
+.video{aspect-ratio:16/9;width:100%;border:1px solid var(--line);background:#e9dfc6;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px}
+.video iframe{width:100%;height:100%;border:0}
+.btn{background:var(--blue);color:#fff;border:0;padding:10px 20px;font:600 15px inherit;border-radius:3px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{background:#17498a}.btn.alt{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+form.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+label{font-size:13.5px;font-weight:600;display:flex;flex-direction:column;gap:4px}
+input,select{font:inherit;padding:8px 10px;border:1px solid var(--line);background:#fff;border-radius:3px;color:var(--ink)}
+input:focus,select:focus,button:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.msg{color:var(--red);font-size:14px;min-height:22px;margin:8px 0}
+.q{border:1px solid var(--line);background:#fff;padding:12px 14px;margin:0 0 12px}
+.q legend{font-weight:600;padding:0 6px}
+.q label{font-weight:400;flex-direction:row;gap:8px;padding:3px 0;cursor:pointer}
+#exam{user-select:none;-webkit-user-select:none}
+.bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font:14px Consolas,monospace;position:sticky;top:48px;background:var(--paper);padding:6px 0;z-index:5}
+.hide{display:none!important}
+#result img{max-width:100%;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}td,th{border:1px solid var(--line);padding:4px 8px;text-align:left}
+#cmd{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#2b333d;color:#d9e2ee;font:13.5px Consolas,monospace;padding:9px 18px;border-top:2px solid var(--blue)}
+#cmd i{color:#7cc0ff;font-style:normal}
+footer{text-align:center;color:var(--mute);font-size:13px;margin:40px 0 20px}
+@media(max-width:800px){.hero{grid-template-columns:1fr}#stage{height:320px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wm" aria-hidden="true"></div>
+<header>
+  <b>3D Mechanical Design &amp; Assembly Modeling</b>
+  <a href="#lecture">Lecture</a><a href="#video">Video</a><a href="#quiz">Quiz</a>
+  <button id="adminBtn" type="button">Admin</button>
+</header>
+<main>
+<section class="hero">
+  <div>
+    <h1>Advanced 3D Mechanical Design and Assembly Modeling</h1>
+    <p>Build solids, edit them, constrain them, assemble them, and turn them into drawings a shop can manufacture. Drag the model to orbit it while it explodes and reassembles.</p>
+    <div class="chips"><span class="chip" style="background:#c5192d">SDG 4 Quality Education</span><span class="chip" style="background:#e0601a">SDG 9 Industry, Innovation and Infrastructure</span><span class="chip" style="background:#a9791f">SDG 12 Responsible Consumption and Production</span></div>
+  </div>
+  <div id="stage">
+    <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><line x1="10" y1="54" x2="52" y2="54" stroke="#c8372d" stroke-width="3"/><line x1="10" y1="54" x2="10" y2="12" stroke="#2f8f4e" stroke-width="3"/><line x1="10" y1="54" x2="30" y2="38" stroke="#1d5fb4" stroke-width="3"/><text x="50" y="50" font-size="11" fill="#c8372d">X</text><text x="14" y="14" font-size="11" fill="#2f8f4e">Y</text><text x="30" y="34" font-size="11" fill="#1d5fb4">Z</text></svg>
+    <div class="cap">Live exploded assembly: gear, shaft, flange, nut</div>
+  </div>
+</section>
+
+<section id="lecture">
+  <h2>Lecture guide</h2>
+  <p class="sub">Eight topics. Hover a card to see its AutoCAD command in the command line below.</p>
+  <div class="grid" id="topics"></div>
+</section>
+
+<section id="video">
+  <h2>Related video</h2>
+  <p class="sub">Watch before answering. The quiz items are drawn from the lecture topics and this video.</p>
+  <div class="video" id="videoBox"></div>
+  <h3 style="margin:26px 0 10px">Related videos for each topic</h3>
+  <div class="grid" id="vidGrid"></div>
+</section>
+
+<section id="quiz">
+  <h2>Quiz</h2>
+  <p class="sub">10 items, unique to each student. Do not leave this tab: switching tabs or windows closes the quiz and submits your current answers.</p>
+  <div class="panel">
+    <div id="startBox">
+      <form class="f" id="info" autocomplete="off">
+        <label>Last name<input id="ln" required></label>
+        <label>First name<input id="fn" required></label>
+        <label>Middle initial<input id="mi" maxlength="2" required></label>
+        <label>Section<select id="sec" required><option value="">Select section</option><option>4A</option><option>4B</option><option>4C</option><option>4D</option><option>4E</option></select></label>
+        <label>Email address<input id="em" type="email" required></label>
+      </form>
+      <div class="msg" id="err"></div>
+      <button class="btn" id="startBtn" type="button">Start quiz</button>
+    </div>
+    <div id="examBox" class="hide">
+      <div class="bar"><span id="who"></span><span id="timer"></span></div>
+      <div id="exam"></div>
+      <div class="msg" id="err2"></div>
+      <button class="btn" id="submitBtn" type="button">Submit answers</button>
+    </div>
+    <div id="result" class="hide">
+      <h3 id="resTxt"></h3>
+      <p id="resNote" class="sub"></p>
+      <p><img id="resImg" alt="Result image"></p>
+      <button class="btn" id="dlBtn" type="button">Download result again</button>
+      <button class="btn alt" id="againBtn" type="button">Back to start</button>
+    </div>
+  </div>
+</section>
+
+<section id="adminPanel" class="hide">
+  <h2>Admin</h2>
+  <div class="panel">
+    <p id="adminStatus"></p>
+    <label>Lecture video link (YouTube)<input id="vidIn" placeholder="https://www.youtube.com/watch?v=..."></label>
+    <p><button class="btn" id="vidSave" type="button">Save video link on this device</button>
+    <button class="btn alt" id="logClear" type="button">Clear attempts on this device</button></p>
+    <p class="sub">Attempts submitted from this device (all students are in your Google Sheet):</p>
+    <div style="overflow:auto"><table id="logTbl"></table></div>
+  </div>
+</section>
+<footer>Prepared by RAYMOND D. ENTAL</footer>
+</main>
+<div id="cmd"><i>Command:</i> <span id="cmdTxt">Select a topic to see its command.</span></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ============ SETTINGS ============ */
+/* ▼▼▼ PASTE YOUR GOOGLE APPS SCRIPT WEB APP LINK (ends with /exec) BETWEEN THE QUOTES ▼▼▼ */
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbwX_PtmcP2Fqq-Y9OX7SxchC5HujVfoUA8N4iWmeOfeP2cRSFIJHrL8Zrr6s6WAzOTCmQ/exec";
+/* ▲▲▲ PASTE YOUR GOOGLE APPS SCRIPT WEB APP LINK ABOVE THIS LINE ▲▲▲ */
+const ADMIN_PASSWORD = "RDDE_2026";
+const VIDEO_URL = "";   /* optional: default YouTube link for the lecture video */
+const WATERMARK = "RAYMOND D. ENTAL";
+
+/* ============ LECTURE CONTENT ============ */
+const TOPICS = [
+["UNION / SUBTRACT / INTERSECT","Boolean operations",["Union merges solids into one body, such as a hub and its boss.","Subtract removes a tool solid from a base: bores, keyways, bolt holes. Select the base first.","Intersect keeps only the shared volume, useful for cam profiles and clearance checks."]],
+["FILLETEDGE / CHAMFEREDGE / SHELL / SLICE","Solid editing",["Fillet rounds edges and relieves stress concentration.","Chamfer bevels edges for easy assembly and safe handling.","Shell hollows a body to a uniform wall thickness; Slice cuts a solid with a plane."]],
+["GEOMCONSTRAINT / DIMCONSTRAINT / PARAMETERS","Parametric constraints",["Geometric constraints: coincident, concentric, parallel, tangent, equal.","Dimensional constraints drive size through named parameters, such as d = m * z.","Change one parameter and every dependent feature updates: design intent is preserved."]],
+["Gears, pulleys, couplings, brackets, flanges","Complex mechanical components",["Spur gear: pitch diameter d = m x z; outside diameter = m(z + 2); same module to mesh.","Pulley and coupling: hub, bore, keyway, set screw. Flange: bolt circle (PCD) and bolt holes.","Bracket: ribs, fillets and slotted holes for mounting and adjustment."]],
+["VIEWBASE / VIEWPROJ / VIEWDETAIL","3D model to orthographic drawing",["Generate front, top and side views directly from the solid.","Third-angle projection puts the top view above the front view.","Add hidden lines, centerlines, dimensions, tolerances and scale."]],
+["VIEWSECTION / 3DMOVE","Section views and exploded drawings",["A section view cuts through the part to reveal internal features, shown with hatching.","Exploded views separate parts along the assembly axis to show order and fit.","Balloons tie each part to the item number in the bill of materials."]],
+["ALIGN / 3DORBIT / VISUALSTYLES","Assembly modeling and visualization",["Insert components, align them and constrain their positions.","Use Realistic or Conceptual visual styles and materials to review the model.","Orbit, section and animate to check how parts move together."]],
+["MASSPROP / INTERFERE","Design validation and manufacturing documents",["MASSPROP reports volume, mass and centroid; INTERFERE finds colliding solids.","Specify fits, tolerances, material and surface finish.","Release a title block, BOM and revision record with the drawing set."]]
+];
+const tp=document.getElementById("topics");
+TOPICS.forEach((t,i)=>{const d=document.createElement("div");d.className="card";
+ d.innerHTML=`<h3>${t[1]}</h3><code>${t[0]}</code><ul>${t[2].map(x=>`<li>${x}</li>`).join("")}</ul>`;
+ d.addEventListener("pointerenter",()=>{cmdTxt.textContent=t[0].split(" / ")[0]+"  Select objects: "});
+ d.addEventListener("pointermove",e=>{const r=d.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;d.style.transform=`rotateY(${x*8}deg) rotateX(${-y*8}deg) translateZ(6px)`});
+ d.addEventListener("pointerleave",()=>{d.style.transform="";});
+ tp.appendChild(d)});
+const cmdTxt=document.getElementById("cmdTxt");
+
+/* ============ VIDEO ============ */
+function ytId(u){const m=(u||"").match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);return m?m[1]:null}
+function showVideo(){const id=ytId(localStorage.getItem("vid")||VIDEO_URL),b=document.getElementById("videoBox");
+ b.innerHTML=id?`<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen title="Lecture video"></iframe>`
+ :`<div><p>No lecture video link is set yet.</p><a class="btn" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=AutoCAD+3D+mechanical+assembly+exploded+view+section+view">Find a related video on YouTube</a></div>`}
+showVideo();
+const VIDEOS=[
+["Boolean operations: Union, Subtract, Intersect","AutoCAD 3D union subtract intersect tutorial"],
+["Solid editing: Fillet edge, Chamfer edge, Shell, Slice","AutoCAD 3D fillet edge chamfer edge shell slice tutorial"],
+["Parametric constraints and parameters","AutoCAD parametric constraints geometric dimensional parameters manager tutorial"],
+["Modeling a spur gear in 3D","AutoCAD 3D spur gear modeling tutorial"],
+["Modeling pulleys, couplings, brackets and flanges","AutoCAD 3D flange bracket pulley coupling modeling tutorial"],
+["3D model to orthographic drawing (VIEWBASE)","AutoCAD VIEWBASE 3D model to 2D orthographic drawing tutorial"],
+["Section views and exploded assembly drawings","AutoCAD section view VIEWSECTION exploded assembly drawing tutorial"],
+["Assembly modeling and visualization","AutoCAD 3D assembly modeling visual styles render tutorial"],
+["Design validation: MASSPROP and INTERFERE","AutoCAD MASSPROP INTERFERE check solids tutorial"],
+["Manufacturing drawings: tolerances, title block, BOM","mechanical engineering drawing tolerances title block bill of materials tutorial"]
+];
+document.getElementById("vidGrid").innerHTML=VIDEOS.map(v=>`<div class="card"><h3>${v[0]}</h3><p style="margin:8px 0"><a class="btn" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=${encodeURIComponent(v[1])}">Watch on YouTube</a></p></div>`).join("");
+
+/* ============ 3D HERO ============ */
+(function(){
+ const el=document.getElementById("stage");
+ if(!window.THREE){return}
+ const r=new THREE.WebGLRenderer({antialias:true,alpha:true});r.setPixelRatio(Math.min(devicePixelRatio,2));el.appendChild(r.domElement);
+ const s=new THREE.Scene(),cam=new THREE.PerspectiveCamera(40,1,.1,100);cam.position.set(5.6,3.4,6.6);cam.lookAt(0,.5,0);
+ s.add(new THREE.AmbientLight(0xffffff,.75));const dl=new THREE.DirectionalLight(0xffffff,.85);dl.position.set(4,8,5);s.add(dl);
+ const grid=new THREE.GridHelper(14,28,0x7d8da3,0xcfc6b0);grid.position.y=-1.9;s.add(grid);
+ const root=new THREE.Group();s.add(root);
+ const steel=new THREE.MeshStandardMaterial({color:0x9db2c7,metalness:.35,roughness:.45});
+ const brass=new THREE.MeshStandardMaterial({color:0xc9a45a,metalness:.4,roughness:.4});
+ const lm=new THREE.LineBasicMaterial({color:0x17375e});
+ function part(geo,mat){geo.rotateX(-Math.PI/2);const m=new THREE.Mesh(geo,mat);m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo,25),lm));root.add(m);return m}
+ const hole=(sh,x,y,rad)=>{const p=new THREE.Path();p.absarc(x,y,rad,0,Math.PI*2,true);sh.holes.push(p)};
+ /* gear */
+ const g=new THREE.Shape(),N=18,ro=1.6,ri=1.35,b=Math.PI*2/N;
+ for(let i=0;i<N;i++){[[0,ri],[.2,ro],[.5,ro],[.7,ri]].forEach((q,k)=>{const a=(i+q[0])*b,x=Math.cos(a)*q[1],y=Math.sin(a)*q[1];(i+k)?g.lineTo(x,y):g.moveTo(x,y)})}
+ hole(g,0,0,.6);for(let i=0;i<4;i++)hole(g,Math.cos(i*Math.PI/2)*.98,Math.sin(i*Math.PI/2)*.98,.2);
+ const gear=part(new THREE.ExtrudeGeometry(g,{depth:.5,bevelEnabled:true,bevelSize:.04,bevelThickness:.04,bevelSegments:2,curveSegments:18}),steel);
+ /* flange */
+ const f=new THREE.Shape();f.absarc(0,0,1.15,0,Math.PI*2,false);hole(f,0,0,.6);for(let i=0;i<4;i++)hole(f,Math.cos(i*Math.PI/2+.78)*.88,Math.sin(i*Math.PI/2+.78)*.88,.1);
+ const flange=part(new THREE.ExtrudeGeometry(f,{depth:.24,bevelEnabled:false,curveSegments:32}),brass);
+ const shaft=part(new THREE.CylinderGeometry(.58,.58,3.6,40),steel);
+ const nut=part(new THREE.CylinderGeometry(.8,.8,.34,6),brass);
+ function size(){r.setSize(el.clientWidth,el.clientHeight);cam.aspect=el.clientWidth/el.clientHeight;cam.updateProjectionMatrix()}
+ size();addEventListener("resize",size);
+ let drag=false,lx=0;
+ el.addEventListener("pointerdown",e=>{drag=true;lx=e.clientX;el.style.cursor="grabbing"});
+ addEventListener("pointerup",()=>{drag=false;el.style.cursor="grab"});
+ addEventListener("pointermove",e=>{if(drag){root.rotation.y+=(e.clientX-lx)*.01;lx=e.clientX}});
+ const calm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+ (function loop(t){requestAnimationFrame(loop);const e=calm?.4:Math.sin(t/1400)*.5+.5;
+  if(!drag&&!calm)root.rotation.y+=.003;gear.rotation.y+= calm?0:.006;
+  shaft.position.y=.2;gear.position.y=0;flange.position.y=-.34-e*1.0;nut.position.y=.62+e*1.5;
+  r.render(s,cam)})(0);
+})();
+
+/* ============ QUESTION BANK [question, correct, wrong, wrong, wrong] ============ */
+const BANK=[
+["Which command merges two or more solids into one composite solid?","UNION","SUBTRACT","INTERSECT","SLICE"],
+["Which Boolean operation keeps only the overlapping volume of two solids?","INTERSECT","UNION","SUBTRACT","SHELL"],
+["You need a bore through a gear hub. Which operation cuts a cylinder out of the hub?","SUBTRACT","UNION","INTERSECT","FILLETEDGE"],
+["In SUBTRACT, which solid do you select first?","The base solid you want to keep","The tool solid to remove","Both at the same time","The most recently drawn solid"],
+["Which command rounds a sharp solid edge with a radius?","FILLETEDGE","CHAMFEREDGE","SHELL","SLICE"],
+["Which command bevels an edge using two distances?","CHAMFEREDGE","FILLETEDGE","UNION","VIEWBASE"],
+["What does the Shell option of SOLIDEDIT produce?","A hollow body with a uniform wall thickness","A solid copy of the body","A section line","A mirrored part"],
+["What does SLICE do to a solid?","Cuts it into parts using a plane or surface","Merges it with another solid","Rounds its edges","Adds a dimension"],
+["Why add a fillet to an inside corner of a bracket?","To reduce stress concentration","To make the part heavier","To change its color","To scale the part"],
+["The Concentric geometric constraint makes two circles or arcs:","Share the same center","Have equal radius","Become tangent lines","Lock their layer"],
+["A dimensional constraint controls:","A size or distance value that can be driven by a parameter","Only the layer color","The plot style","The viewport name"],
+["You change a named parameter in the Parameters Manager. What happens?","Every dimension that references it updates","The file is deleted","Nothing changes","Only the viewport scale changes"],
+["What is the formula for the pitch diameter of a spur gear?","d = m x z","d = z / m","d = m + z","d = m / z"],
+["For two spur gears to mesh they must have the same:","Module and pressure angle","Number of teeth","Bore diameter","Face color"],
+["What is the standard pressure angle of common spur gears?","20 degrees","45 degrees","90 degrees","5 degrees"],
+["A V-belt pulley is used to:","Transmit power between shafts through a belt","Join two shafts rigidly end to end","Clamp two plates","Measure torque"],
+["A coupling is designed to:","Join two shafts and transmit torque","Cut threads","Hollow out a solid","Dimension a drawing"],
+["A flange is:","A rim or plate with bolt holes used to connect parts","A type of gear tooth","A dimension style","A coordinate system"],
+["On a flange, the bolt circle diameter (PCD) is the diameter of the circle that passes through:","The centers of the bolt holes","The outer edge","The bore surface","The hatch boundary"],
+["A bracket is mainly used to:","Support or mount a component to a structure","Transmit rotation","Cut solids","Print drawings"],
+["Which command creates base orthographic views from a 3D model?","VIEWBASE","OFFSET","ZOOM","ARRAY"],
+["What is the main purpose of a section view?","To show internal features","To add color","To enlarge the part","To reduce file size"],
+["In a section view, the cut surfaces are shown with:","Hatching","Dashed lines","Dimensions","Balloons"],
+["In third-angle projection, the top view is placed:","Above the front view","Below the front view","Left of the front view","Inside the front view"],
+["Hidden lines in an orthographic drawing are:","Dashed lines showing features not visible","Thick continuous lines","Centerlines","Invisible"],
+["An exploded assembly drawing shows:","Parts separated along the assembly axis to show order and relationships","Only the finished product","Only one section","Only the material list"],
+["Balloons on an assembly drawing refer to:","Item numbers in the bill of materials","Tolerance values","Layer names","Viewport scales"],
+["MASSPROP reports:","Volume, mass and centroid of a solid","Plot scale","Layer list","Linetype names"],
+["INTERFERE is used to:","Find overlapping or colliding solids in an assembly","Check spelling","Plot to PDF","Attach xrefs"],
+["Manufacturing documentation normally includes:","Dimensions, tolerances, material, title block and bill of materials","Only a rendered image","Only screenshots","Only the color scheme"],
+["Which visual style best helps review a model realistically?","Realistic with materials","2D Wireframe","Plot style table","Frozen layers"],
+["A clearance fit between a shaft and a bore means the parts:","Assemble freely with a small gap","Are pressed together permanently","Are welded","Cannot move"],
+["SDG 9 focuses on:","Industry, innovation and infrastructure","Zero hunger","Clean water and sanitation","Gender equality"],
+["SDG 12 encourages designers to:","Use responsible consumption and production, such as less material waste","End poverty by gifts","Protect life below water only","Reduce voting costs"],
+["SDG 4 relates to learning CAD skills because it promotes:","Quality education","Affordable energy","Climate action","Peace and justice"]
+];
+
+/* ============ SEEDED RANDOM ============ */
+function hash(s){let h=1779033703^s.length;for(let i=0;i<s.length;i++){h=Math.imul(h^s.charCodeAt(i),3432918353);h=h<<13|h>>>19}h=Math.imul(h^h>>>16,2246822507);return(h^h>>>13)>>>0}
+function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffle(a,R){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function calc(q,ans,wr,unit,dec){const f=v=>(+v.toFixed(dec)).toString()+unit;const out=[f(ans)];
+ wr.concat([ans*1.5,ans*.75,ans+10,ans+25]).forEach(w=>{const x=f(w);if(!out.includes(x)&&out.length<4)out.push(x)});return [q].concat(out)}
+function generated(R){
+ const ri=(a,b)=>a+Math.floor(R()*(b-a+1)),pick=a=>a[ri(0,a.length-1)];
+ const m=pick([2,2.5,3,4,5]),z=ri(18,48),z1=ri(18,30),z2=ri(31,60),D1=pick([100,120,150,200]),D2=D1+50*ri(1,4),N1=pick([1200,1440,1800]);
+ return [
+  calc(`A spur gear has module ${m} mm and ${z} teeth. What is its pitch diameter?`,m*z,[m*(z+2),m*z/2,m*(z-2)]," mm",1),
+  calc(`Two meshing spur gears have ${z1} and ${z2} teeth with module ${m} mm. What is the center distance?`,m*(z1+z2)/2,[m*(z1+z2),m*(z2-z1)/2,m*z2]," mm",2),
+  calc(`A ${D1} mm driver pulley turns at ${N1} rpm and drives a ${D2} mm pulley. What is the driven speed?`,N1*D1/D2,[N1*D2/D1,N1*D1/(D1+D2),N1/2]," rpm",0)
+ ]}
+function buildExam(seed){
+ const R=rng(seed),idx=shuffle(BANK.map((_,i)=>i),R).slice(0,7);
+ const raw=idx.map(i=>BANK[i]).concat(generated(R));
+ return shuffle(raw,R).map(it=>{const opts=shuffle(it.slice(1).map((t,k)=>({t,c:k===0})),R);return{q:it[0],opts,ci:opts.findIndex(o=>o.c)}})}
+
+/* ============ QUIZ FLOW ============ */
+const $=id=>document.getElementById(id),L="ABCD";
+const fmt=d=>d.toLocaleString("en-PH",{timeZone:"Asia/Manila",dateStyle:"medium",timeStyle:"medium"});
+let S={active:false},last=null;
+function info(){return{ln:$("ln").value.trim(),fn:$("fn").value.trim(),mi:$("mi").value.trim().replace(/\.$/,""),sec:$("sec").value,em:$("em").value.trim().toLowerCase()}}
+$("startBtn").onclick=()=>{
+ const i=info();
+ if(!i.ln||!i.fn||!i.mi||!i.sec||!i.em){$("err").textContent="Complete every field, including your section.";return}
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(i.em)){$("err").textContent="Enter a valid email address, like name@school.edu.";return}
+ $("err").textContent="";
+ const key="att:"+i.em,attempt=(+localStorage.getItem(key)||0)+1;localStorage.setItem(key,attempt);
+ const seed=hash([i.ln,i.fn,i.mi,i.em,attempt].join("|").toLowerCase());
+ S={active:true,i,attempt,start:new Date(),exam:buildExam(seed),flag:""};
+ $("who").textContent=`${i.ln}, ${i.fn} ${i.mi}. | ${i.sec} | Attempt ${attempt}`;
+ $("exam").innerHTML=S.exam.map((q,n)=>`<fieldset class="q"><legend>${n+1}. ${q.q}</legend>${q.opts.map((o,k)=>`<label><input type="radio" name="q${n}" value="${k}"> ${L[k]}. ${o.t}</label>`).join("")}</fieldset>`).join("");
+ $("startBox").classList.add("hide");$("examBox").classList.remove("hide");$("result").classList.add("hide");
+ S.tm=setInterval(()=>{const s=Math.floor((new Date()-S.start)/1000);$("timer").textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")},500);
+ scrollTo({top:$("quiz").offsetTop-60});
+};
+$("submitBtn").onclick=()=>{
+ const un=S.exam.filter((_,n)=>!document.querySelector(`input[name=q${n}]:checked`)).length;
+ if(un&&!S.warned){S.warned=true;$("err2").textContent=`${un} item(s) unanswered. Press Submit answers again to finish anyway.`;return}
+ finish("")};
+function leave(){if(S.active)finish("Left the quiz tab: auto-submitted")}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)leave()});
+addEventListener("blur",leave);
+document.addEventListener("contextmenu",e=>{if(S.active)e.preventDefault()});
+["copy","cut","paste"].forEach(ev=>document.addEventListener(ev,e=>{if(S.active)e.preventDefault()}));
+
+function finish(flag){
+ if(!S.active)return;S.active=false;clearInterval(S.tm);
+ const end=new Date();let score=0;
+ const items=S.exam.map((q,n)=>{const c=document.querySelector(`input[name=q${n}]:checked`),a=c?+c.value:-1;if(a===q.ci)score++;
+  return{q:q.q,mine:a<0?"No answer":`${L[a]}. ${q.opts[a].t}`,key:`${L[q.ci]}. ${q.opts[q.ci].t}`,ok:a===q.ci}});
+ const i=S.i;
+ last={i,attempt:S.attempt,start:S.start,end,score,items,flag};
+ const name=`${i.ln}, ${i.fn} ${i.mi}.`;
+ const canvas=draw(last);
+ const url=canvas.toDataURL("image/png");
+ $("resImg").src=url;
+ $("resTxt").textContent=`${name} | Section ${i.sec} | Score ${score}/10 | Attempt ${S.attempt}`;
+ $("examBox").classList.add("hide");$("result").classList.remove("hide");
+ last.url=url;download();
+ const payload={name,lastName:i.ln,firstName:i.fn,mi:i.mi,section:i.sec,email:i.em,attempt:S.attempt,
+  start:fmt(S.start),end:fmt(end),durationSec:Math.round((end-S.start)/1000),score,total:10,flag,
+  answers:items.map((x,n)=>`${n+1}:${x.mine}`).join(" | "),key:items.map((x,n)=>`${n+1}:${x.key}`).join(" | ")};
+ const log=JSON.parse(localStorage.getItem("log")||"[]");log.push({t:fmt(end),name,sec:i.sec,em:i.em,att:S.attempt,score,flag});localStorage.setItem("log",JSON.stringify(log));
+ if(SHEET_URL){
+  fetch(SHEET_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)})
+   .then(()=>$("resNote").textContent=(flag?flag+". ":"")+"Your result picture was downloaded and your score was sent to the recorder.")
+   .catch(()=>$("resNote").textContent=(flag?flag+". ":"")+"Your result picture was downloaded, but the score could not be sent. Send the picture to your instructor.");
+ }else $("resNote").textContent=(flag?flag+". ":"")+"Your result picture was downloaded. Score recorder is not connected yet.";
+}
+function wrap(x,t,w){const out=[];let line="";t.split(" ").forEach(wd=>{const tt=line?line+" "+wd:wd;if(x.measureText(tt).width>w&&line){out.push(line);line=wd}else line=tt});out.push(line);return out}
+function draw(r){
+ const W=1100,P=50,c=document.createElement("canvas");c.width=W;c.height=5000;const x=c.getContext("2d");
+ x.fillStyle="#f1e8d2";x.fillRect(0,0,W,5000);
+ x.strokeStyle="rgba(50,75,110,.10)";for(let k=0;k<W;k+=24){x.beginPath();x.moveTo(k,0);x.lineTo(k,5000);x.stroke()}for(let k=0;k<5000;k+=24){x.beginPath();x.moveTo(0,k);x.lineTo(W,k);x.stroke()}
+ let y=P+10;x.fillStyle="#26303c";x.font="bold 30px Georgia,serif";x.fillText("Advanced 3D Mechanical Design and Assembly Modeling",P,y);
+ y+=34;x.font="20px Segoe UI,Arial";x.fillStyle="#1d5fb4";x.fillText("Quiz result",P,y);
+ x.fillStyle="#26303c";const i=r.i,rows=[`Student: ${i.ln}, ${i.fn} ${i.mi}.`,`Section: ${i.sec}`,`Email: ${i.em}`,`Number of attempts: ${r.attempt}`,`Time started: ${fmt(r.start)}`,`Time submitted: ${fmt(r.end)}`];
+ y+=14;x.font="18px Segoe UI,Arial";rows.forEach(t=>{y+=28;x.fillText(t,P,y)});
+ y+=62;x.font="bold 44px Segoe UI,Arial";x.fillStyle=r.score>=7?"#2f8f4e":"#c8372d";x.fillText(`Score: ${r.score} / 10  (${r.score*10}%)`,P,y);
+ if(r.flag){y+=32;x.font="bold 18px Segoe UI,Arial";x.fillStyle="#c8372d";x.fillText(r.flag,P,y)}
+ y+=34;x.fillStyle="#26303c";x.font="bold 22px Segoe UI,Arial";x.fillText("Answer key",P,y);
+ r.items.forEach((it,n)=>{y+=14;x.font="bold 17px Segoe UI,Arial";x.fillStyle="#26303c";
+  wrap(x,`${n+1}. ${it.q}`,W-2*P).forEach(l=>{y+=24;x.fillText(l,P,y)});
+  x.font="17px Segoe UI,Arial";x.fillStyle=it.ok?"#2f8f4e":"#c8372d";
+  wrap(x,`${it.ok?"Correct":"Wrong"} - Your answer: ${it.mine}`,W-2*P-20).forEach(l=>{y+=23;x.fillText(l,P+20,y)});
+  x.fillStyle="#1d5fb4";wrap(x,`Key: ${it.key}`,W-2*P-20).forEach(l=>{y+=23;x.fillText(l,P+20,y)});y+=6});
+ y+=50;x.fillStyle="#667282";x.font="15px Segoe UI,Arial";x.fillText(`Generated ${fmt(r.end)} | ${WATERMARK}`,P,y);
+ const H=y+P,out=document.createElement("canvas");out.width=W;out.height=H;const o=out.getContext("2d");o.drawImage(c,0,0);
+ o.strokeStyle="#1d5fb4";o.lineWidth=4;o.strokeRect(14,14,W-28,H-28);
+ o.save();o.globalAlpha=.13;o.fillStyle="#123";o.font="bold 38px Arial";o.rotate(-Math.PI/7);
+ for(let a=-400;a<H+400;a+=170)for(let b=-700;b<W+700;b+=430)o.fillText(WATERMARK,b,a);o.restore();
+ return out}
+function download(){if(!last)return;const a=document.createElement("a");a.href=last.url;a.download=`Result_${last.i.ln}_${last.i.fn}_${last.i.sec}_Attempt${last.attempt}.png`.replace(/\s+/g,"_");document.body.appendChild(a);a.click();a.remove()}
+$("dlBtn").onclick=download;
+$("againBtn").onclick=()=>{$("result").classList.add("hide");$("startBox").classList.remove("hide")};
+
+/* ============ ADMIN ============ */
+$("adminBtn").onclick=()=>{
+ const p=prompt("Admin password");if(p===null)return;
+ if(p!==ADMIN_PASSWORD){alert("Incorrect password.");return}
+ $("adminPanel").classList.remove("hide");$("vidIn").value=localStorage.getItem("vid")||VIDEO_URL;
+ $("adminStatus").textContent=SHEET_URL?"Score recorder: connected to your Google Apps Script link.":"Score recorder: NOT connected. Paste your Apps Script web app link in SHEET_URL in the code.";
+ renderLog();scrollTo({top:$("adminPanel").offsetTop-60});
+};
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function renderLog(){const l=JSON.parse(localStorage.getItem("log")||"[]");
+ $("logTbl").innerHTML="<tr><th>Submitted</th><th>Student</th><th>Section</th><th>Email</th><th>Attempt</th><th>Score</th><th>Note</th></tr>"+l.map(r=>`<tr><td>${esc(r.t)}</td><td>${esc(r.name)}</td><td>${esc(r.sec)}</td><td>${esc(r.em)}</td><td>${r.att}</td><td>${r.score}/10</td><td>${esc(r.flag)}</td></tr>`).join("")}
+$("vidSave").onclick=()=>{localStorage.setItem("vid",$("vidIn").value.trim());showVideo()};
+$("logClear").onclick=()=>{localStorage.removeItem("log");renderLog()};
+</script>
+</body>
+</html>
